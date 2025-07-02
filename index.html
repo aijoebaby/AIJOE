@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AIJOE - Your Voice Helper</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    #response {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-top: 20px;
+      min-height: 60px;
+    }
+    button, input[type="text"] {
+      margin-top: 10px;
+      font-size: 18px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    #mic {
+      background-color: #007bff;
+      color: white;
+      margin-right: 10px;
+    }
+    #emergency {
+      margin-top: 30px;
+    }
+    #emergency button {
+      background-color: red;
+      color: white;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>👋 Hi, I’m <strong>AIJOE</strong></h1>
+  <p>How can I help you today?</p>
+
+  <div>
+    <input type="text" id="textInput" placeholder="Type here or press mic" />
+    <br/>
+    <button id="mic">🎤 Talk</button>
+    <button onclick="handleText()">Send</button>
+  </div>
+
+  <div id="response">I’m listening...</div>
+
+  <div id="emergency">
+    <h3>🚨 Emergency Options</h3>
+    <button onclick="window.location.href='tel:911'">Call 911</button>
+    <button onclick="alert('Mental Health Resources Coming Soon')">Mental Health Help</button>
+  </div>
+
+  <script>
+    const micBtn = document.getElementById("mic");
+    const textInput = document.getElementById("textInput");
+    const responseBox = document.getElementById("response");
+
+    micBtn.onclick = () => {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        textInput.value = transcript;
+        simulateResponse(transcript);
+      };
+    };
+
+    function handleText() {
+      const input = textInput.value.trim();
+      if (input) simulateResponse(input);
+    }
+
+    function simulateResponse(message) {
+      responseBox.textContent = "AIJOE heard you say: " + message;
+      textInput.value = "";
+    }
+  </script>
+</body>
+</html>
