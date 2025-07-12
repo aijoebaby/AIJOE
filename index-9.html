@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIJOE</title>
+  <link rel="manifest" href="/manifest.json" />
+  <style>
+    body { font-family: sans-serif; margin: 0; text-align: center; background: #f4f4f4; }
+    header { background: #222; color: white; padding: 1em; font-size: 2em; }
+    img.avatar { width: 200px; border-radius: 50%; margin-top: 20px; }
+    p { font-size: 1.2em; margin: 20px; }
+    button { padding: 15px; margin: 10px; font-size: 1.2em; border-radius: 10px; }
+    #mic { background: #007bff; color: white; border: none; }
+  </style>
+</head>
+<body onload="say('Hey! I’m Joey. I’m your voice assistant — how can I help you today?')">
+  <header>AIJOE</header>
+
+  <img src="joey-avatar-app.png?v=1" alt="Joey the Dog Avatar" class="avatar" />
+
+  <p>Hi! I'm AIJOE, your voice-first assistant. Tap the mic and ask me anything.</p>
+
+  <div>
+    <button id="mic">🎤 Talk to AIJOE</button>
+    <button onclick="getLocation()">📍 Find Me</button>
+    <button onclick="say('Where do you want to go?')">🍔 Food</button>
+    <button onclick="say('Here are your directions')">🧭 Directions</button>
+    <button onclick="say('Calling for help!')">🚨 Help</button>
+  </div>
+
+  <script>
+    const synth = window.speechSynthesis;
+
+    function getAmericanVoice() {
+      const voices = synth.getVoices();
+      return voices.find(v =>
+        v.lang === "en-US" &&
+        (v.name.includes("Matthew") || v.name.includes("Guy") || v.name.includes("Male"))
+      ) || voices.find(v => v.lang === "en-US") || voices[0];
+    }
+
+    function say(text) {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.voice = getAmericanVoice();
+      utter.pitch = 1.0;
+      utter.rate = 0.95;
+      synth.speak(utter);
+    }
+
+    document.getElementById('mic').addEventListener('click', () => {
+      say("Hey! I'm AIJOE. What can I do for you?");
+    });
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const msg = `You're at latitude ${position.coords.latitude.toFixed(2)} and longitude ${position.coords.longitude.toFixed(2)}`;
+          say(msg);
+        });
+      } else {
+        say('Geolocation is not supported on this device.');
+      }
+    }
+  </script>
+</body>
+</html>
